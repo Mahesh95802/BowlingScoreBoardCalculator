@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const scoreSheet = []
 
 const sum = (total, element) => total + element
@@ -44,12 +45,14 @@ const scoreCalculatorCascade = (scoreArray) => {
 }
 
 const scoreCalculator = (scoreArray) => {
+    if (!Array.isArray(scoreArray)) throw new TypeError("Array Input Required!")
     const scoreObject = {
         score: 0
     }
     let frame  = []
     let flag = 1
     for(let i = 0; i < scoreArray.length; i++){
+        if (!_.isNumber(scoreArray[i])) throw new TypeError()
         frame.push(scoreArray[i])
         if( scoreArray[i] == 10 && frame.length == 1) {
             scoreObject[flag] = [...frame, ...scoreArray.slice(i+1, i+3)]
