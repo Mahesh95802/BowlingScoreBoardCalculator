@@ -48,25 +48,29 @@ const scoreCalculator = (scoreArray) => {
         score: 0
     }
     let frame  = []
-    let flag = 0
+    let flag = 1
     for(let i = 0; i < scoreArray.length; i++){
         frame.push(scoreArray[i])
         if( scoreArray[i] == 10 && frame.length == 1) {
-            flag += 1
             scoreObject[flag] = [...frame, ...scoreArray.slice(i+1, i+3)]
             scoreObject["score"] = scoreObject[String(flag)].reduce( sum, scoreObject["score"])
             frame = []
-        } else if( frame.reduce(sum, 0) == 10){
             flag += 1
+        } else if( frame.reduce(sum, 0) == 10){
             scoreObject[flag] = [...frame, ...scoreArray.slice(i+1, i+2)]
             scoreObject["score"] = scoreObject[String(flag)].reduce( sum, scoreObject["score"])
             frame = []
-        } else if( frame.length === 2 ){
             flag += 1
+        } else if( frame.length === 2 ){
             scoreObject[flag] = frame
             scoreObject["score"] = scoreObject[String(flag)].reduce( sum, scoreObject["score"])
             frame = []
-        } 
+            flag += 1
+        } if (flag === 10) {
+            scoreObject[flag] = scoreArray.slice(i+1, i+4)
+            scoreObject["score"] = scoreObject[String(flag)].reduce( sum, scoreObject["score"])
+            break
+        }
     }
     console.log(scoreObject)
     return scoreObject.score
