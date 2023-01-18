@@ -1,16 +1,3 @@
-const scoreObject = {
-    1: [],
-    2: [],
-    3: [],
-    4: [],
-    5: [],
-    6: [],
-    7: [],
-    8: [],
-    9: [],
-    10: [],
-}
-
 const scoreSheet = []
 
 const sum = (total, element) => total + element
@@ -34,7 +21,10 @@ function frameCalculator(flag, i){
     } return scoreSheet[i]
 }
 
-const scoreCalculator = (scoreArray) => {
+const scoreCalculatorCascade = (scoreArray) => {
+    const scoreObject = {
+        score: 0
+    }
     let frame  = []
     for(let i = 0; i < scoreArray.length; i++){
         frame.push(scoreArray[i])
@@ -47,8 +37,41 @@ const scoreCalculator = (scoreArray) => {
     for(let i = 0; i < scoreSheet.length; i++){
         console.log( frameCalculator(0, i) )
         scoreObject[String(i+1)] = frameCalculator(0, i)
+        scoreObject["score"] = scoreObject[String(i+1)].reduce( sum, scoreObject["score"])
     }
     console.log(scoreObject)
+    return scoreObject
 }
 
-console.log(scoreCalculator([10, 5, 5, 9, 0]))
+const scoreCalculator = (scoreArray) => {
+    const scoreObject = {
+        score: 0
+    }
+    let frame  = []
+    let flag = 0
+    for(let i = 0; i < scoreArray.length; i++){
+        frame.push(scoreArray[i])
+        if( scoreArray[i] == 10 && frame.length == 1) {
+            flag += 1
+            scoreObject[flag] = [...frame, ...scoreArray.slice(i+1, i+3)]
+            scoreObject["score"] = scoreObject[String(flag)].reduce( sum, scoreObject["score"])
+            frame = []
+        } else if( frame.reduce(sum, 0) == 10){
+            flag += 1
+            scoreObject[flag] = [...frame, ...scoreArray.slice(i+1, i+2)]
+            scoreObject["score"] = scoreObject[String(flag)].reduce( sum, scoreObject["score"])
+            frame = []
+        } else if( frame.length === 2 ){
+            flag += 1
+            scoreObject[flag] = frame
+            scoreObject["score"] = scoreObject[String(flag)].reduce( sum, scoreObject["score"])
+            frame = []
+        } 
+    }
+    console.log(scoreObject)
+    return scoreObject.score
+}
+
+console.log(scoreCalculator([10, 5, 5, 10, 10, 10]))
+
+module.exports = { scoreCalculator }
